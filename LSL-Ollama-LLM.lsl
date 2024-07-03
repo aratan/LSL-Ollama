@@ -19,6 +19,16 @@ default {
             string content = llDeleteSubString(body, content_end, -1);
             content = llDeleteSubString(content, 0, content_start - 1);
             content = llUnescapeURL(content); // Elimina cualquier escape de URL en la cadena
+
+            // Reemplazar "},"done_reason:"stop","done":true,"total_duration":" por "*"
+            content = llDumpList2String(llParseString2List(content, ["},\"done_reason\""], []), "*");
+
+            // Eliminar las últimas 50 letras si la longitud es mayor a 50
+            integer length = llStringLength(content);
+            if (length > 50) {
+                content = llDeleteSubString(content, length - 50, length);
+            }
+
             llSay(0, "Respuesta del bot: " + content);
         } else if (status == 0) {
             llSay(0, "Error: No se pudo conectar con el servidor.");
