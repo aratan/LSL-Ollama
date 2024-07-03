@@ -20,8 +20,14 @@ default {
             content = llDeleteSubString(content, 0, content_start - 1);
             content = llUnescapeURL(content); // Elimina cualquier escape de URL en la cadena
 
-            // Reemplazar "},"done_reason:"stop","done":true,"total_duration":" por "*"
+            // Reemplazar "},\"done_reason\"" por "*"
             content = llDumpList2String(llParseString2List(content, ["},\"done_reason\""], []), "*");
+
+            // Encontrar y eliminar cualquier contenido después de "stop\",\"done\":true,\"total_duration\":"
+            integer stop_index = llSubStringIndex(content, ":\"stop\",\"done\":true,\"total_duration\":");
+            if (stop_index != -1) {
+                content = llDeleteSubString(content, stop_index, -1);
+            }
 
             // Eliminar las últimas 50 letras si la longitud es mayor a 50
             integer length = llStringLength(content);
